@@ -1,6 +1,5 @@
-
+// instamojo model file
 var mongoose = require('mongoose');
-
 var OrderSchema = new mongoose.Schema({
     purpose: String,
     amount: Number,
@@ -19,7 +18,7 @@ var OrderSchema = new mongoose.Schema({
     street: String,
     landmark: String,
     city: String,
-    district : String,
+    district: String,
     state: String
 });
 const Order = mongoose.model('Order', OrderSchema);

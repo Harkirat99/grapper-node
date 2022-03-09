@@ -1,8 +1,8 @@
+// instamojo api file
+
 var request = require('request');
 var Instamojo = require('instamojo-nodejs')
-let Order = require('../model/order')
-let service = require('../service/order')
-
+// let Order = require('../model/order')
 exports.pay = async function (body) {
   var headers = {
     'X-Api-Key': 'test_d5f178f6f910a5ec48a429d540d',
@@ -50,8 +50,4 @@ exports.pay = async function (body) {
   return res
 }
 
-exports.get = async (id) => {
-  let entity = await service.get(id)
-  return entity
-}
 

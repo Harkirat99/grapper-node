@@ -9,7 +9,6 @@ mongoose.connect('mongodb://localhost:27017/grapper');
 let db = mongoose.connection;
 const multer = require("multer");
 const upload = multer();
-
 const { Router } = require('express');
 const path = require("path");
 global.__basedir = __dirname;
@@ -29,24 +28,16 @@ let productApi = require('./api/product');
 let imageApi = require('./api/image');
 let cartApi = require('./api/cart');
 let orderApi = require('./api/order');
-
-//const product = require('./model/product');
+// Image Api
 app.use("/uploads/image", express.static("./uploads/image"));
-
-//  app.post('/products', productApi.uploadImg, productApi.newProduct)
-
-//app.post('/products', productApi.uploadImg, productApi.newProduct)
 app.post('/images', imageApi.uploadImg, imageApi.newImage)
-//app.get('/products', productApi.products);
-
-//app.get('/products/:id', productApi.product)
-
 app.get('/download/:name', imageApi.downloadFiles)
-
-app.post('/comments/:productId', async function(req, res) {
-  let response = await productApi.comment(req.body,req.params.productId)
+// Add comment Api
+app.post('/comments/:productId', async function (req, res) {
+  let response = await productApi.comment(req.body, req.params.productId)
   res.json(response)
 })
+// Products Api
 app.post('/products', async function (req, res) {
   try {
     // JSON.parse(req.body)
@@ -56,7 +47,6 @@ app.post('/products', async function (req, res) {
   catch (err) {
     res.json(err.message)
   }
-
 })
 
 app.get('/products', async function (req, res) {
@@ -67,6 +57,7 @@ app.get('/products', async function (req, res) {
     res.json(err.message)
   }
 })
+
 app.get('/qury', async function (req, res) {
   try {
     let query = inflate(req.query)
@@ -76,6 +67,7 @@ app.get('/qury', async function (req, res) {
     res.json(err.message)
   }
 })
+
 app.get('/products/:id', async function (req, res) {
   try {
     let response = await productApi.get(req.params.id)
@@ -93,10 +85,7 @@ app.delete('/products/:id', async function (req, res) {
     res.json(err.message)
   }
 })
-
-// at Object.exports.quantity (c:\\projects\\grapper-node\\api\\cart.js:153:43)\n    at processTicksAndRejections (internal/process/task_queues.js:93:5)\n    at async c:\\projects\\grapper-node\\app.js:149:18'
-// __proto__:Error
-
+// Register and Login Api
 app.post('/register', async function (req, res) {
   let response = await userApi.create(req.body)
   res.json(response)
@@ -113,7 +102,7 @@ app.post('/login', async function (req, res) {
   }
 
 })
-
+// Cart api
 app.post('/carts/:userId', async function (req, res) {
   let userId = req.params.userId
   let productId = req.body.productId;
@@ -137,14 +126,6 @@ app.delete('/carts/:productId/:userId', async function (req, res) {
   let response = await cartApi.removeItem(productId, userId)
   res.json(response)
 })
-
-// app.delete('/carts', cartApi.emptyCart);
-
-// app.delete('/carts/:userId',async function(req, res){
-
-//   let response = await cartApi.emptyCart();
-//   res.json(response)
-// })
 
 app.delete('/increase/:id', async function (req, res) {
   let id = req.params.id
@@ -187,88 +168,22 @@ app.post('/get', async function (req, res) {
   res.json(response)
 })
 
+// Instamojo Payment gateway Api
 app.post('/pay', async function (req, res) {
-    let response = await orderApi.pay(req.body)
-    res.json(response)
-    // console.log(response)
+  let response = await orderApi.pay(req.body)
+  res.json(response)
 })
 app.get('/pay/:id', async function (req, res) {
   let response = await orderApi.get(req.params.id)
   res.json(response)
 })
-
-app.get('/filterProduct/:min/:max', async function(req,res){
+// Filter Api
+app.get('/filterProduct/:min/:max', async function (req, res) {
   let mini = req.params.min;
   let maxi = req.params.max;
   let response = await productApi.filter(mini, maxi)
   res.json(response)
 })
-// // Testing payment gateway
-// const Insta = require('instamojo-payment-nodejs');
-// const API_KEY = "test_d5f178f6f910a5ec48a429d540d";
-
-// const AUTH_KEY = "test_f3f32cda3a7aafc2a188579530f";
-
-// Insta.setKeys(API_KEY, AUTH_KEY);
-
-// Insta.isSandboxMode(true);
-
-
-// // var data = new Insta.PaymentData();
-// var data = new Insta.PaymentData();
-
-// const REDIRECT_URL = "http://localhost:3000/success";
-
-// data.setRedirectUrl(REDIRECT_URL);
-// data.send_email = "True";
-// data.purpose = "Test"; // REQUIRED
-
-
-// app.post('/order', (req, res) => {
-//   var name = 'harkirat';
-//   var email = 'virkharkiratsingh99@gmail.com';
-//   var amount = 12;
-
-//   data.amount = amount;
-//   data.name = name;
-//   data.email = email; // REQUIRED
-
-//   Insta.createPayment(data, function (error, response) {
-//     if (error) {
-//       console.log('error came')
-//     } else {
-//       // Payment redirection link at response.payment_request.longurl
-//       res.send("Please check your email to make payment")
-//     }
-//   });
-// });
-
-// let orderApi = require('./api/order');
-// app.post('/pay',async function(){
-
-// })
-
-// var Insta = require('instamojo');
-// var API_KEY = 'test_d5f178f6f910a5ec48a429d540d';
-// var AUTH_KEY = 'test_f3f32cda3a7aafc2a188579530f';
-// Insta.setKeys(API_KEY, AUTH_KEY);
-
-// isSandboxMode(true);
-// var data = Insta.paymentData();
-
-// data.purpose = req.body.purpose;
-// data.amount =  req.body.amount;
-
-// Insta.createPayment(data,function(error, response){
-//   if(error){
-//     console.log(error);
-//   }
-//   else{
-//     console.log('response');
-//   }
-// })
-
-
 
 app.listen(9090, function () {
   console.log('server started on port 9090...')
